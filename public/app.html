@@ -48,9 +48,7 @@
     }
 
     .logo-dot svg { width: 16px; height: 16px; fill: #000; }
-
     .app-title { font-weight: 700; font-size: 1rem; }
-
     .user-info { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--muted); }
 
     .avatar {
@@ -70,7 +68,6 @@
       font-size: 0.8rem;
       transition: color 0.15s, border-color 0.15s;
     }
-
     .logout-btn:hover { color: var(--text); border-color: #555; }
 
     /* ── Main layout ── */
@@ -85,19 +82,10 @@
       width: 100%;
     }
 
-    /* ── Source selector (Step 1) ── */
-    #step-select {
-      width: 100%;
-      animation: fadeIn 0.3s ease;
-    }
+    /* ── Source selector ── */
+    #step-select { width: 100%; animation: fadeIn 0.3s ease; }
 
-    .step-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-      letter-spacing: -0.01em;
-    }
-
+    .step-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
     .step-sub { color: var(--muted); margin-bottom: 2rem; font-size: 0.9rem; }
 
     .source-options {
@@ -116,19 +104,12 @@
       transition: border-color 0.15s, background 0.15s;
       text-align: center;
     }
-
-    .source-card:hover, .source-card.active {
-      border-color: var(--green);
-      background: #0f1f14;
-    }
-
+    .source-card:hover, .source-card.active { border-color: var(--green); background: #0f1f14; }
     .source-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
     .source-card .label { font-weight: 600; font-size: 0.95rem; }
     .source-card .desc { color: var(--muted); font-size: 0.8rem; margin-top: 0.25rem; }
 
-    /* Playlist picker */
     #playlist-picker { margin-bottom: 2rem; }
-
     .picker-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
 
     .playlist-list {
@@ -138,7 +119,6 @@
       border-radius: 8px;
       background: var(--surface);
     }
-
     .playlist-list::-webkit-scrollbar { width: 4px; }
     .playlist-list::-webkit-scrollbar-track { background: transparent; }
     .playlist-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -152,29 +132,14 @@
       transition: background 0.1s;
       border-bottom: 1px solid var(--border);
     }
-
     .playlist-item:last-child { border-bottom: none; }
     .playlist-item:hover, .playlist-item.selected { background: var(--surface2); }
     .playlist-item.selected { background: #0f1f14; }
 
-    .playlist-thumb {
-      width: 36px; height: 36px;
-      border-radius: 4px;
-      object-fit: cover;
-      background: var(--surface2);
-      flex-shrink: 0;
-    }
-
+    .playlist-thumb { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
     .playlist-name { font-size: 0.88rem; font-weight: 500; }
     .playlist-count { font-size: 0.78rem; color: var(--muted); }
-
-    .playlist-check {
-      margin-left: auto;
-      color: var(--green);
-      font-size: 1rem;
-      opacity: 0;
-    }
-
+    .playlist-check { margin-left: auto; color: var(--green); font-size: 1rem; opacity: 0; }
     .playlist-item.selected .playlist-check { opacity: 1; }
 
     .start-btn {
@@ -190,15 +155,11 @@
       letter-spacing: 0.04em;
       transition: background 0.15s, transform 0.15s;
     }
-
     .start-btn:hover:not(:disabled) { background: var(--green-hover); transform: scale(1.02); }
     .start-btn:disabled { opacity: 0.4; cursor: default; }
 
     /* ── Loading ── */
-    #step-loading {
-      text-align: center;
-      animation: fadeIn 0.3s ease;
-    }
+    #step-loading { text-align: center; animation: fadeIn 0.3s ease; }
 
     .spinner {
       width: 40px; height: 40px;
@@ -208,14 +169,10 @@
       animation: spin 0.8s linear infinite;
       margin: 0 auto 1.5rem;
     }
-
     .loading-text { color: var(--muted); font-size: 0.9rem; }
 
     /* ── Review step ── */
-    #step-review {
-      width: 100%;
-      animation: fadeIn 0.3s ease;
-    }
+    #step-review { width: 100%; animation: fadeIn 0.3s ease; }
 
     .progress-bar-wrap {
       width: 100%;
@@ -225,15 +182,39 @@
       margin-bottom: 1.5rem;
       overflow: hidden;
     }
+    .progress-bar-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.3s ease; }
 
-    .progress-bar-fill {
-      height: 100%;
-      background: var(--green);
-      border-radius: 2px;
-      transition: width 0.3s ease;
+    .review-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
     }
 
-    .track-counter { text-align: center; color: var(--muted); font-size: 0.82rem; margin-bottom: 1.5rem; }
+    .track-counter { color: var(--muted); font-size: 0.82rem; }
+
+    .removals-btn {
+      background: #2a0e0e;
+      border: 1px solid #5a1a1a;
+      color: #ff8080;
+      border-radius: 20px;
+      padding: 0.3rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background 0.15s, border-color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .removals-btn:hover { background: #3a1212; border-color: var(--red); }
+    .removals-btn .badge {
+      background: var(--red);
+      color: #fff;
+      border-radius: 10px;
+      padding: 0.05rem 0.45rem;
+      font-size: 0.72rem;
+    }
 
     /* Track card */
     .track-card {
@@ -247,39 +228,25 @@
 
     .album-art-wrap { position: relative; width: 100%; padding-top: 100%; }
 
-    .album-art {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .album-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
     .no-art {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
       background: var(--surface2);
       font-size: 4rem;
     }
 
-    /* Audio wave indicator */
     .audio-indicator {
       position: absolute;
-      bottom: 1rem;
-      right: 1rem;
+      bottom: 1rem; right: 1rem;
       background: rgba(0,0,0,0.7);
       border-radius: 20px;
       padding: 0.3rem 0.6rem;
-      display: flex;
-      align-items: center;
-      gap: 2px;
+      display: flex; align-items: center; gap: 2px;
       opacity: 0;
       transition: opacity 0.3s;
     }
-
     .audio-indicator.playing { opacity: 1; }
 
     .wave-bar {
@@ -288,65 +255,43 @@
       border-radius: 2px;
       animation: wave 0.8s ease-in-out infinite;
     }
-
     .wave-bar:nth-child(2) { animation-delay: 0.1s; }
     .wave-bar:nth-child(3) { animation-delay: 0.2s; }
     .wave-bar:nth-child(4) { animation-delay: 0.3s; }
 
     .no-preview-badge {
       position: absolute;
-      bottom: 1rem;
-      right: 1rem;
-      background: rgba(0,0,0,0.7);
+      bottom: 1rem; right: 1rem;
+      background: rgba(0,0,0,0.75);
       border-radius: 20px;
-      padding: 0.25rem 0.6rem;
+      padding: 0.25rem 0.7rem;
       font-size: 0.72rem;
       color: var(--muted);
     }
 
-    .track-info {
-      padding: 1.25rem;
-    }
+    .track-info { padding: 1.25rem; }
 
     .track-name {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-
     .track-artist {
-      font-size: 0.9rem;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 0.9rem; color: var(--muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-
     .track-album {
-      font-size: 0.78rem;
-      color: #444;
-      margin-top: 0.15rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 0.78rem; color: #444; margin-top: 0.15rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
     /* Action buttons */
     .action-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; margin-bottom: 1rem;
     }
 
     .action-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      display: flex; flex-direction: column; align-items: center;
       gap: 0.4rem;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -354,24 +299,20 @@
       border-radius: 12px;
       padding: 1rem 1.4rem;
       cursor: pointer;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
       transition: transform 0.15s, background 0.15s, border-color 0.15s;
       min-width: 90px;
     }
-
     .action-btn .icon { font-size: 1.5rem; }
-
     .action-btn:hover { transform: scale(1.06); }
-
-    .btn-remove { }
     .btn-remove:hover, .btn-remove.pressed { background: #2a0e0e; border-color: var(--red); color: var(--red); }
-
-    .btn-keep { }
     .btn-keep:hover, .btn-keep.pressed { background: #0a1f11; border-color: var(--green); color: var(--green); }
 
-    .btn-skip {
+    .secondary-row {
+      display: flex; gap: 0.6rem; justify-content: center; margin-bottom: 0.75rem;
+    }
+
+    .btn-secondary {
       background: none;
       border: 1px solid var(--border);
       color: var(--muted);
@@ -381,22 +322,8 @@
       font-size: 0.8rem;
       transition: color 0.15s, border-color 0.15s;
     }
-
-    .btn-skip:hover { color: var(--text); border-color: #555; }
-
-    .btn-undo {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 8px;
-      padding: 0.5rem 1.2rem;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: color 0.15s, border-color 0.15s;
-    }
-
-    .btn-undo:hover:not(:disabled) { color: var(--text); border-color: #555; }
-    .btn-undo:disabled { opacity: 0.25; cursor: default; }
+    .btn-secondary:hover:not(:disabled) { color: var(--text); border-color: #555; }
+    .btn-secondary:disabled { opacity: 0.25; cursor: default; }
 
     .key-hints {
       text-align: center;
@@ -404,7 +331,6 @@
       font-size: 0.75rem;
       margin-top: 0.25rem;
     }
-
     kbd {
       background: var(--surface2);
       border: 1px solid var(--border);
@@ -415,18 +341,10 @@
     }
 
     /* ── Summary step ── */
-    #step-summary {
-      width: 100%;
-      animation: fadeIn 0.3s ease;
-    }
+    #step-summary { width: 100%; animation: fadeIn 0.3s ease; }
 
     .summary-header { text-align: center; margin-bottom: 2rem; }
-    .summary-count {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--red);
-      display: block;
-    }
+    .summary-count { font-size: 2.5rem; font-weight: 800; color: var(--red); display: block; }
 
     .summary-list {
       background: var(--surface);
@@ -436,94 +354,169 @@
       overflow-y: auto;
       margin-bottom: 1.5rem;
     }
-
     .summary-list::-webkit-scrollbar { width: 4px; }
     .summary-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     .summary-track {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+      display: flex; align-items: center; gap: 0.75rem;
       padding: 0.65rem 0.9rem;
       border-bottom: 1px solid var(--border);
       font-size: 0.85rem;
     }
-
     .summary-track:last-child { border-bottom: none; }
-
-    .summary-thumb {
-      width: 36px; height: 36px;
-      border-radius: 4px;
-      object-fit: cover;
-      background: var(--surface2);
-      flex-shrink: 0;
-    }
-
+    .summary-thumb { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
     .summary-track-name { font-weight: 500; }
     .summary-track-artist { color: var(--muted); font-size: 0.78rem; }
 
     .confirm-btn {
-      width: 100%;
-      background: var(--red);
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 0.9rem;
-      border: none;
-      border-radius: 500px;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      transition: background 0.15s;
-      margin-bottom: 0.75rem;
+      width: 100%; background: var(--red); color: #fff;
+      font-weight: 700; font-size: 0.95rem; padding: 0.9rem;
+      border: none; border-radius: 500px; cursor: pointer;
+      letter-spacing: 0.04em; transition: background 0.15s; margin-bottom: 0.75rem;
     }
-
     .confirm-btn:hover { background: var(--red-hover); }
     .confirm-btn:disabled { opacity: 0.5; cursor: default; }
 
     .cancel-btn {
-      width: 100%;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.8rem;
-      border-radius: 500px;
-      cursor: pointer;
+      width: 100%; background: none;
+      border: 1px solid var(--border); color: var(--muted);
+      font-weight: 600; font-size: 0.9rem; padding: 0.8rem;
+      border-radius: 500px; cursor: pointer;
       transition: color 0.15s, border-color 0.15s;
     }
-
     .cancel-btn:hover { color: var(--text); border-color: #555; }
 
-    .empty-summary {
-      text-align: center;
-      padding: 2rem;
-      color: var(--muted);
-    }
+    .empty-summary { text-align: center; padding: 2rem; color: var(--muted); }
 
     /* ── Done step ── */
-    #step-done {
-      text-align: center;
-      animation: fadeIn 0.3s ease;
-    }
-
+    #step-done { text-align: center; animation: fadeIn 0.3s ease; }
     .done-icon { font-size: 3rem; margin-bottom: 1rem; }
     .done-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
     .done-sub { color: var(--muted); margin-bottom: 2rem; }
 
     .restart-btn {
-      background: var(--green);
-      color: #000;
-      font-weight: 700;
-      padding: 0.85rem 2rem;
-      border: none;
-      border-radius: 500px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      transition: background 0.15s;
+      background: var(--green); color: #000;
+      font-weight: 700; padding: 0.85rem 2rem;
+      border: none; border-radius: 500px; cursor: pointer;
+      font-size: 0.95rem; transition: background 0.15s;
+    }
+    .restart-btn:hover { background: var(--green-hover); }
+
+    /* ── Removals modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex; align-items: flex-end; justify-content: center;
+      z-index: 200;
+      animation: fadeIn 0.2s ease;
     }
 
-    .restart-btn:hover { background: var(--green-hover); }
+    .modal-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px 16px 0 0;
+      width: 100%;
+      max-width: 600px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .modal-title { font-weight: 700; font-size: 1rem; }
+
+    .modal-header-actions { display: flex; gap: 0.5rem; align-items: center; }
+
+    .btn-delete-all {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.35rem 0.8rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-delete-all:hover { background: var(--red-hover); }
+    .btn-delete-all:disabled { opacity: 0.5; cursor: default; }
+
+    .btn-close-modal {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-close-modal:hover { color: var(--text); border-color: #555; }
+
+    .modal-empty {
+      padding: 2.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .modal-track-list { overflow-y: auto; flex: 1; }
+    .modal-track-list::-webkit-scrollbar { width: 4px; }
+    .modal-track-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .modal-track-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-track-row:last-child { border-bottom: none; }
+
+    .modal-thumb { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
+
+    .modal-track-info { flex: 1; min-width: 0; }
+    .modal-track-name { font-size: 0.88rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .modal-track-artist { font-size: 0.78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .modal-track-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+
+    .btn-panel-undo {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-panel-undo:hover { color: var(--text); border-color: #555; }
+
+    .btn-delete-now {
+      background: none;
+      border: 1px solid #5a1a1a;
+      color: #ff8080;
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-delete-now:hover { background: #2a0e0e; border-color: var(--red); }
+    .btn-delete-now:disabled { opacity: 0.5; cursor: default; }
 
     /* ── Utilities ── */
     .hidden { display: none !important; }
@@ -532,11 +525,7 @@
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
+    @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes wave {
       0%, 100% { height: 6px; }
       50% { height: 16px; }
@@ -544,25 +533,20 @@
 
     /* Swipe feedback overlay */
     .swipe-overlay {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       pointer-events: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 5rem;
       opacity: 0;
       transition: opacity 0.15s;
       z-index: 100;
     }
-
     .swipe-overlay.show-remove { background: rgba(232,64,64,0.15); opacity: 1; }
     .swipe-overlay.show-keep { background: rgba(29,185,84,0.15); opacity: 1; }
   </style>
 </head>
 <body>
 
-  <!-- Flash overlay for key feedback -->
   <div class="swipe-overlay" id="swipe-overlay"></div>
 
   <!-- Header -->
@@ -605,7 +589,7 @@
         <div class="playlist-list" id="playlist-list"></div>
       </div>
 
-      <button class="start-btn" id="start-btn" disabled onclick="startReview()">Start Reviewing</button>
+      <button class="start-btn" id="start-btn" disabled onclick="startReview(event)">Start Reviewing</button>
     </div>
 
     <!-- Step 2: Loading -->
@@ -619,9 +603,15 @@
       <div class="progress-bar-wrap">
         <div class="progress-bar-fill" id="progress-fill"></div>
       </div>
-      <div class="track-counter" id="track-counter"></div>
 
-      <div class="track-card" id="track-card">
+      <div class="review-top-row">
+        <div class="track-counter" id="track-counter"></div>
+        <button class="removals-btn hidden" id="removals-btn" onclick="openRemovalsPanel()">
+          Review removals <span class="badge" id="removals-badge">0</span>
+        </button>
+      </div>
+
+      <div class="track-card">
         <div class="album-art-wrap">
           <img class="album-art" id="album-art" src="" alt="" />
           <div class="no-art hidden" id="no-art">🎵</div>
@@ -651,13 +641,13 @@
         </button>
       </div>
 
-      <div style="text-align:center; margin-bottom:0.75rem; display:flex; gap:0.6rem; justify-content:center;">
-        <button class="btn-undo" id="btn-undo" onclick="undoLast()" disabled>↩ Undo</button>
-        <button class="btn-skip" onclick="decide('skip')">Skip</button>
+      <div class="secondary-row">
+        <button class="btn-secondary" id="btn-undo" onclick="undoLast()" disabled>↩ Undo</button>
+        <button class="btn-secondary" onclick="decide('skip')">↓ Skip</button>
       </div>
 
       <div class="key-hints">
-        <kbd>←</kbd> Remove &nbsp;·&nbsp; <kbd>→</kbd> Keep &nbsp;·&nbsp; <kbd>Space</kbd> Skip &nbsp;·&nbsp; <kbd>Z</kbd> Undo
+        <kbd>←</kbd> Remove &nbsp;·&nbsp; <kbd>→</kbd> Keep &nbsp;·&nbsp; <kbd>↓</kbd>/<kbd>Space</kbd> Skip &nbsp;·&nbsp; <kbd>Z</kbd> Undo
       </div>
     </div>
 
@@ -684,18 +674,31 @@
 
   </main>
 
-  <audio id="preview-audio" preload="none"></audio>
+  <!-- Removals panel modal -->
+  <div id="removals-modal" class="modal-overlay hidden">
+    <div class="modal-panel" id="modal-panel">
+      <div class="modal-header">
+        <span class="modal-title">Marked for removal</span>
+        <div class="modal-header-actions">
+          <button class="btn-delete-all" id="btn-delete-all" onclick="deleteAllFromPanel()">Delete all now</button>
+          <button class="btn-close-modal" onclick="closeRemovalsPanel()">✕</button>
+        </div>
+      </div>
+      <div class="modal-track-list" id="modal-track-list"></div>
+    </div>
+  </div>
 
   <script>
     // ── State ────────────────────────────────────────────────────────────────
-    let source = null;          // 'liked' | 'playlist'
+    let source = null;
     let selectedPlaylist = null;
     let playlists = [];
     let tracks = [];
     let currentIndex = 0;
-    let toRemove = [];          // track objects
-    let history = [];           // [{action, track}] for undo
-    const audio = document.getElementById('preview-audio');
+    let toRemove = [];
+    let history = [];
+    let autoAdvanceTimer = null;
+    let audio = null;           // created inside Start button gesture
 
     // ── Init ─────────────────────────────────────────────────────────────────
     async function init() {
@@ -707,7 +710,6 @@
         } else {
           document.getElementById('user-avatar').style.display = 'none';
         }
-        // Preload playlists in background
         const pl = await apiFetch('/api/playlists');
         playlists = pl;
         renderPlaylistList();
@@ -721,7 +723,6 @@
       source = s;
       document.getElementById('card-liked').classList.toggle('active', s === 'liked');
       document.getElementById('card-playlist').classList.toggle('active', s === 'playlist');
-
       if (s === 'playlist') {
         document.getElementById('playlist-picker').classList.remove('hidden');
         document.getElementById('start-btn').disabled = !selectedPlaylist;
@@ -755,14 +756,20 @@
     }
 
     // ── Start review ─────────────────────────────────────────────────────────
-    async function startReview() {
-      // Unlock the audio element here, inside the button-click gesture, before
-      // any awaits. Setting src + calling play() in the same sync frame as the
-      // user gesture establishes the browser's autoplay permission on this
-      // element for the rest of the session.
+    // The audio element is created here — inside the click handler — so the
+    // browser grants autoplay permission to this object for the entire session.
+    // Every subsequent track just swaps .src on the same object.
+    function startReview(event) {
+      audio = new Audio();
       audio.volume = 0.6;
+      // Calling play() synchronously in the gesture frame activates the element.
+      // It rejects (no src yet) but that's fine — the activation sticks.
       audio.play().catch(() => {});
 
+      _loadTracks();
+    }
+
+    async function _loadTracks() {
       showStep('loading');
       try {
         let endpoint;
@@ -784,6 +791,7 @@
         }
         showStep('review');
         updateUndoBtn();
+        updateRemovalsBtn();
         renderTrack();
       } catch (e) {
         alert('Failed to load tracks: ' + (e.message || 'unknown error'));
@@ -793,6 +801,8 @@
 
     // ── Track rendering ──────────────────────────────────────────────────────
     function renderTrack() {
+      clearAutoAdvance();
+
       if (currentIndex >= tracks.length) {
         showSummary();
         return;
@@ -804,9 +814,8 @@
 
       document.getElementById('progress-fill').style.width = pct + '%';
       document.getElementById('track-counter').textContent =
-        `Track ${currentIndex + 1} of ${total}  ·  ${toRemove.length} marked for removal`;
+        `Track ${currentIndex + 1} of ${total}`;
 
-      // Album art
       if (t.albumArt) {
         document.getElementById('album-art').src = t.albumArt;
         document.getElementById('album-art').classList.remove('hidden');
@@ -820,33 +829,53 @@
       document.getElementById('track-artist').textContent = t.artists;
       document.getElementById('track-album').textContent = t.album;
 
-      // Preview audio — reuse the same element (no src reset) so the browser
-      // keeps the autoplay permission granted during the Start button gesture.
-      audio.pause();
+      // Audio: pause first, then swap src on the same activated element
+      if (audio) audio.pause();
+
       if (t.preview_url) {
         document.getElementById('no-preview-badge').classList.add('hidden');
         document.getElementById('audio-indicator').classList.add('playing');
         audio.src = t.preview_url;
-        audio.volume = 0.6;
         audio.play().catch(() => {
           document.getElementById('audio-indicator').classList.remove('playing');
         });
       } else {
-        audio.src = '';
+        if (audio) audio.src = '';
+        document.getElementById('no-preview-badge').textContent = 'No preview — skipping in 3s';
         document.getElementById('no-preview-badge').classList.remove('hidden');
         document.getElementById('audio-indicator').classList.remove('playing');
+        // Auto-advance after 3 seconds when there's no preview to listen to
+        let countdown = 3;
+        autoAdvanceTimer = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
+            document.getElementById('no-preview-badge').textContent =
+              `No preview — skipping in ${countdown}s`;
+          } else {
+            clearAutoAdvance();
+            decide('skip');
+          }
+        }, 1000);
+      }
+    }
+
+    function clearAutoAdvance() {
+      if (autoAdvanceTimer) {
+        clearInterval(autoAdvanceTimer);
+        autoAdvanceTimer = null;
       }
     }
 
     function stopAudio() {
-      audio.pause();
-      audio.src = '';
+      clearAutoAdvance();
+      if (audio) { audio.pause(); audio.src = ''; }
       document.getElementById('audio-indicator').classList.remove('playing');
     }
 
     // ── Decision ─────────────────────────────────────────────────────────────
     function decide(action) {
       if (currentIndex >= tracks.length) return;
+      clearAutoAdvance();
 
       history.push({ action, track: tracks[currentIndex] });
 
@@ -858,16 +887,17 @@
         flashOverlay('keep');
         animateBtn('btn-keep');
       }
-      // skip: just advance
 
       currentIndex++;
       updateUndoBtn();
+      updateRemovalsBtn();
       renderTrack();
     }
 
-    // ── Undo ─────────────────────────────────────────────────────────────────
+    // ── Undo (main button — last decision) ───────────────────────────────────
     function undoLast() {
       if (!history.length) return;
+      clearAutoAdvance();
       const last = history.pop();
       if (last.action === 'remove') {
         const idx = toRemove.findLastIndex(t => t.id === last.track.id);
@@ -875,6 +905,7 @@
       }
       currentIndex--;
       updateUndoBtn();
+      updateRemovalsBtn();
       renderTrack();
     }
 
@@ -882,6 +913,129 @@
       document.getElementById('btn-undo').disabled = history.length === 0;
     }
 
+    // ── Removals panel ────────────────────────────────────────────────────────
+    function updateRemovalsBtn() {
+      const btn = document.getElementById('removals-btn');
+      const n = toRemove.length;
+      document.getElementById('removals-badge').textContent = n;
+      btn.classList.toggle('hidden', n === 0);
+    }
+
+    function openRemovalsPanel() {
+      renderModalList();
+      document.getElementById('removals-modal').classList.remove('hidden');
+    }
+
+    function closeRemovalsPanel() {
+      document.getElementById('removals-modal').classList.add('hidden');
+    }
+
+    function renderModalList() {
+      const list = document.getElementById('modal-track-list');
+      const deleteAllBtn = document.getElementById('btn-delete-all');
+
+      if (!toRemove.length) {
+        list.innerHTML = '<div class="modal-empty">Nothing marked for removal.</div>';
+        deleteAllBtn.disabled = true;
+        return;
+      }
+
+      deleteAllBtn.disabled = false;
+      list.innerHTML = '';
+      toRemove.forEach((t, i) => {
+        const row = document.createElement('div');
+        row.className = 'modal-track-row';
+        row.dataset.trackId = t.id;
+        row.innerHTML = `
+          <img class="modal-thumb" src="${t.albumArt || ''}" onerror="this.style.display='none'" />
+          <div class="modal-track-info">
+            <div class="modal-track-name">${escHtml(t.name)}</div>
+            <div class="modal-track-artist">${escHtml(t.artists)}</div>
+          </div>
+          <div class="modal-track-actions">
+            <button class="btn-panel-undo" onclick="undoFromPanel(${i})">↩ Undo</button>
+            <button class="btn-delete-now" onclick="deleteNowFromPanel(${i}, this)">Delete now</button>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    // Move track back into the unseen queue (inserts at current position)
+    function undoFromPanel(idx) {
+      if (idx < 0 || idx >= toRemove.length) return;
+      const track = toRemove.splice(idx, 1)[0];
+      // Put it back into tracks at currentIndex so it's the next one seen
+      tracks.splice(currentIndex, 0, track);
+      // Remove from history too if it's there
+      const hi = history.findLastIndex(h => h.action === 'remove' && h.track.id === track.id);
+      if (hi !== -1) history.splice(hi, 1);
+      updateUndoBtn();
+      updateRemovalsBtn();
+      renderModalList();
+    }
+
+    async function deleteNowFromPanel(idx, btn) {
+      if (idx < 0 || idx >= toRemove.length) return;
+      btn.disabled = true;
+      btn.textContent = '…';
+
+      const track = toRemove[idx];
+      try {
+        if (source === 'liked') {
+          await apiFetch('/api/remove-liked', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: [track.id] }),
+          });
+        } else {
+          await apiFetch('/api/remove-playlist-tracks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ playlistId: selectedPlaylist.id, uris: [track.uri] }),
+          });
+        }
+        toRemove.splice(idx, 1);
+        updateRemovalsBtn();
+        renderModalList();
+      } catch (e) {
+        btn.disabled = false;
+        btn.textContent = 'Delete now';
+        alert('Delete failed: ' + (e.message || 'unknown error'));
+      }
+    }
+
+    async function deleteAllFromPanel() {
+      const btn = document.getElementById('btn-delete-all');
+      if (!toRemove.length) return;
+      btn.disabled = true;
+      btn.textContent = 'Deleting…';
+
+      try {
+        if (source === 'liked') {
+          await apiFetch('/api/remove-liked', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: toRemove.map(t => t.id) }),
+          });
+        } else {
+          await apiFetch('/api/remove-playlist-tracks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ playlistId: selectedPlaylist.id, uris: toRemove.map(t => t.uri) }),
+          });
+        }
+        toRemove = [];
+        updateRemovalsBtn();
+        closeRemovalsPanel();
+      } catch (e) {
+        btn.disabled = false;
+        btn.textContent = 'Delete all now';
+        alert('Delete failed: ' + (e.message || 'unknown error'));
+      }
+    }
+
+    // ── Visual feedback ───────────────────────────────────────────────────────
     function flashOverlay(type) {
       const el = document.getElementById('swipe-overlay');
       el.textContent = type === 'remove' ? '✕' : '✓';
@@ -903,11 +1057,9 @@
       const count = toRemove.length;
       document.getElementById('remove-count').textContent = count;
       document.getElementById('remove-count').style.color = count > 0 ? 'var(--red)' : 'var(--green)';
-
-      const subtitle = count === 0
+      document.getElementById('summary-subtitle').textContent = count === 0
         ? 'Nothing to remove — your library is clean!'
         : `track${count === 1 ? '' : 's'} marked for removal`;
-      document.getElementById('summary-subtitle').textContent = subtitle;
 
       const wrap = document.getElementById('summary-list-wrap');
       if (count === 0) {
@@ -932,14 +1084,14 @@
         wrap.innerHTML = '';
         wrap.appendChild(list);
         document.getElementById('confirm-btn').disabled = false;
-        document.getElementById('confirm-btn').textContent = `Delete ${count} track${count === 1 ? '' : 's'} from Spotify`;
+        document.getElementById('confirm-btn').textContent =
+          `Delete ${count} track${count === 1 ? '' : 's'} from Spotify`;
       }
     }
 
-    // ── Commit deletions ─────────────────────────────────────────────────────
+    // ── Commit all deletions (end-of-session) ─────────────────────────────────
     async function commitDeletions() {
       if (!toRemove.length) return;
-
       const btn = document.getElementById('confirm-btn');
       btn.disabled = true;
       btn.textContent = 'Deleting…';
@@ -947,27 +1099,24 @@
       try {
         let result;
         if (source === 'liked') {
-          const ids = toRemove.map(t => t.id);
           result = await apiFetch('/api/remove-liked', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ids }),
+            body: JSON.stringify({ ids: toRemove.map(t => t.id) }),
           });
         } else {
-          const uris = toRemove.map(t => t.uri);
           result = await apiFetch('/api/remove-playlist-tracks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ playlistId: selectedPlaylist.id, uris }),
+            body: JSON.stringify({ playlistId: selectedPlaylist.id, uris: toRemove.map(t => t.uri) }),
           });
         }
-
         showStep('done');
-        document.getElementById('done-title').textContent = `Removed ${result.removed} track${result.removed === 1 ? '' : 's'}`;
-        document.getElementById('done-sub').textContent =
-          source === 'liked'
-            ? 'Tracks removed from your Liked Songs.'
-            : `Tracks removed from "${selectedPlaylist.name}".`;
+        document.getElementById('done-title').textContent =
+          `Removed ${result.removed} track${result.removed === 1 ? '' : 's'}`;
+        document.getElementById('done-sub').textContent = source === 'liked'
+          ? 'Tracks removed from your Liked Songs.'
+          : `Tracks removed from "${selectedPlaylist.name}".`;
       } catch (e) {
         btn.disabled = false;
         btn.textContent = 'Retry deletion';
@@ -978,12 +1127,14 @@
     // ── Navigation ───────────────────────────────────────────────────────────
     function goToSelect() {
       stopAudio();
+      closeRemovalsPanel();
       source = null;
       selectedPlaylist = null;
       tracks = [];
       toRemove = [];
       history = [];
       currentIndex = 0;
+      audio = null;
       document.getElementById('card-liked').classList.remove('active');
       document.getElementById('card-playlist').classList.remove('active');
       document.getElementById('playlist-picker').classList.add('hidden');
@@ -992,20 +1143,26 @@
     }
 
     function showStep(name) {
-      const steps = ['select', 'loading', 'review', 'summary', 'done'];
-      steps.forEach(s => {
+      ['select', 'loading', 'review', 'summary', 'done'].forEach(s => {
         document.getElementById('step-' + s).classList.toggle('hidden', s !== name);
       });
     }
 
     // ── Keyboard shortcuts ───────────────────────────────────────────────────
     document.addEventListener('keydown', e => {
-      if (!document.getElementById('step-review').classList.contains('hidden')) {
-        if (e.key === 'ArrowLeft')              { e.preventDefault(); decide('remove'); }
-        if (e.key === 'ArrowRight')             { e.preventDefault(); decide('keep'); }
-        if (e.key === ' ')                      { e.preventDefault(); decide('skip'); }
-        if (e.key === 'z' || e.key === 'Z')     { e.preventDefault(); undoLast(); }
+      // Close modal with Escape
+      if (e.key === 'Escape') {
+        closeRemovalsPanel();
+        return;
       }
+      if (document.getElementById('step-review').classList.contains('hidden')) return;
+      // Don't fire shortcuts when modal is open
+      if (!document.getElementById('removals-modal').classList.contains('hidden')) return;
+
+      if (e.key === 'ArrowLeft')            { e.preventDefault(); decide('remove'); }
+      if (e.key === 'ArrowRight')           { e.preventDefault(); decide('keep'); }
+      if (e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); decide('skip'); }
+      if (e.key === 'z' || e.key === 'Z')   { e.preventDefault(); undoLast(); }
     });
 
     // ── Helpers ──────────────────────────────────────────────────────────────
