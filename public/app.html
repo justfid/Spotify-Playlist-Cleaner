@@ -337,6 +337,14 @@
     .btn-delete-all:hover { background: var(--red-hover); }
     .btn-delete-all:disabled { opacity: 0.5; cursor: default; }
 
+    .btn-recover-all {
+      background: var(--green); color: #fff; border: none;
+      border-radius: 6px; padding: 0.35rem 0.8rem; font-size: 0.8rem;
+      font-weight: 700; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-recover-all:hover { background: var(--green-hover); }
+    .btn-recover-all:disabled { opacity: 0.5; cursor: default; }
+
     .btn-close-modal {
       background: none; border: 1px solid var(--border); color: var(--muted);
       border-radius: 6px; padding: 0.35rem 0.7rem; font-size: 0.9rem;
@@ -529,6 +537,7 @@
       <div class="modal-header">
         <span class="modal-title">Marked for removal</span>
         <div class="modal-header-actions">
+          <button class="btn-recover-all" id="btn-recover-all" onclick="recoverAllFromPanel()">Recover all</button>
           <button class="btn-delete-all" id="btn-delete-all" onclick="deleteAllFromPanel()">Delete all now</button>
           <button class="btn-close-modal" onclick="closeRemovalsPanel()">✕</button>
         </div>
@@ -557,23 +566,67 @@
     let pendingSeek = null;   // { uri, ms } — seek fires once SDK confirms track is playing
     let currentUserId = null;
 
+    // ── API ───────────────────────────────────────────────────────────────────
+    async function apiFetch(url, options = {}) {
+      const res = await fetch(url, options);
+      if (!res.ok) {
+        const err = new Error(`HTTP ${res.status}`);
+        err.status = res.status;
+        throw err;
+      }
+      return res.json();
+    }
+
+    function apiDeleteTracks(tracksToDelete) {
+      if (source === 'liked') {
+        return apiFetch('/api/remove-liked', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: tracksToDelete.map(t => t.id) }),
+        });
+      }
+      return apiFetch('/api/remove-playlist-tracks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ playlistId: selectedPlaylist.id, uris: tracksToDelete.map(t => t.uri) }),
+      });
+    }
+
+    // ── Auth / Init ───────────────────────────────────────────────────────────
+    async function init() {
+      try {
+        const me = await apiFetch('/api/me');
+        currentUserId = me.id;
+        document.getElementById('user-name').textContent = me.display_name || me.id;
+        if (me.images?.[0]?.url) {
+          document.getElementById('user-avatar').src = me.images[0].url;
+        } else {
+          document.getElementById('user-avatar').style.display = 'none';
+        }
+        const pl = await apiFetch('/api/playlists');
+        playlists = pl.filter(p => p.owner.id === currentUserId);
+        renderPlaylistList();
+      } catch (e) {
+        if (e.status === 401) location.href = '/';
+      }
+    }
+
     // ── Spotify Web Playback SDK ──────────────────────────────────────────────
     function initPlayer() {
       player = new Spotify.Player({
         name: 'Trim',
-        getOAuthToken: cb => {
-          // Always fetch the current token from our server so refreshes are handled
-          fetch('/api/token')
-            .then(r => r.json())
-            .then(d => cb(d.access_token))
-            .catch(() => {});
+        getOAuthToken: async cb => {
+          try {
+            const r = await fetch('/api/token');
+            const d = await r.json();
+            cb(d.access_token);
+          } catch {}
         },
         volume: lastVolume,
       });
 
       player.addListener('ready', ({ device_id }) => {
         deviceId = device_id;
-        console.log('Spotify player ready, device_id:', device_id);
         // If we're already in review when the player connects, start playing
         if (!document.getElementById('step-review').classList.contains('hidden') &&
             currentIndex < tracks.length) {
@@ -582,10 +635,7 @@
         }
       });
 
-      player.addListener('not_ready', () => {
-        console.warn('Spotify player went offline');
-        deviceId = null;
-      });
+      player.addListener('not_ready', () => { deviceId = null; });
 
       // Mirror playing state in the wave indicator, and fire any pending seek
       // once the SDK confirms the target track is actually playing.
@@ -606,8 +656,7 @@
         }
       });
 
-      player.addListener('account_error', ({ message }) => {
-        console.error('Account error (Premium required):', message);
+      player.addListener('account_error', () => {
         document.getElementById('track-counter').textContent =
           '⚠ Spotify Premium is required for full playback';
       });
@@ -619,7 +668,7 @@
       player.connect();
     }
 
-    // ── Playback helpers ──────────────────────────────────────────────────────
+    // ── Playback ──────────────────────────────────────────────────────────────
     async function playTrack(uri, id) {
       if (!deviceId) return;
       currentPlayingUri = uri;
@@ -658,7 +707,6 @@
       }
     }
 
-    // Find the section most likely to be the main part of the song.
     // Skips the opening section (intro), filters out short transitions,
     // excludes anything that starts with less than 30s left in the track,
     // then picks the loudest remaining candidate.
@@ -669,8 +717,8 @@
         s.duration >= 10 &&
         (trackDuration == null || s.start + 30 <= trackDuration)
       );
-      const source = candidates.length ? candidates : pool.filter(s => s.duration >= 10);
-      const fallback = source.length ? source : pool;
+      const src = candidates.length ? candidates : pool.filter(s => s.duration >= 10);
+      const fallback = src.length ? src : pool;
       return fallback.reduce((best, s) => s.loudness > best.loudness ? s : best);
     }
 
@@ -696,26 +744,7 @@
       document.getElementById('btn-mute').textContent = isMuted ? '🔇' : '🔊';
     }
 
-    // ── Init ─────────────────────────────────────────────────────────────────
-    async function init() {
-      try {
-        const me = await apiFetch('/api/me');
-        currentUserId = me.id;
-        document.getElementById('user-name').textContent = me.display_name || me.id;
-        if (me.images?.[0]?.url) {
-          document.getElementById('user-avatar').src = me.images[0].url;
-        } else {
-          document.getElementById('user-avatar').style.display = 'none';
-        }
-        const pl = await apiFetch('/api/playlists');
-        playlists = pl.filter(p => p.owner.id === currentUserId);
-        renderPlaylistList();
-      } catch (e) {
-        if (e.status === 401) location.href = '/';
-      }
-    }
-
-    // ── Source selection ─────────────────────────────────────────────────────
+    // ── Source selection ──────────────────────────────────────────────────────
     function selectSource(s) {
       source = s;
       document.getElementById('card-liked').classList.toggle('active', s === 'liked');
@@ -756,7 +785,7 @@
       });
     }
 
-    // ── Start review ─────────────────────────────────────────────────────────
+    // ── Review ────────────────────────────────────────────────────────────────
     async function startReview() {
       showStep('loading');
       try {
@@ -787,7 +816,6 @@
       }
     }
 
-    // ── Track rendering ──────────────────────────────────────────────────────
     function renderTrack() {
       if (currentIndex >= tracks.length) {
         showSummary();
@@ -798,8 +826,7 @@
       const total = tracks.length;
 
       document.getElementById('progress-fill').style.width = (currentIndex / total * 100) + '%';
-      document.getElementById('track-counter').textContent =
-        `Track ${currentIndex + 1} of ${total}`;
+      document.getElementById('track-counter').textContent = `Track ${currentIndex + 1} of ${total}`;
 
       if (t.albumArt) {
         document.getElementById('album-art').src = t.albumArt;
@@ -814,11 +841,10 @@
       document.getElementById('track-artist').textContent = t.artists;
       document.getElementById('track-album').textContent = t.album;
 
-      // Start full track playback via the SDK device, then seek to the loudest section
       playTrack(t.uri, t.id).catch(() => {});
     }
 
-    // ── Decision ─────────────────────────────────────────────────────────────
+    // ── Decision ──────────────────────────────────────────────────────────────
     function decide(action) {
       if (currentIndex >= tracks.length) return;
 
@@ -836,12 +862,10 @@
       currentIndex++;
       updateUndoBtn();
       updateRemovalsBtn();
-
-      // Pause current track, then start the next one
       pausePlayback().finally(() => renderTrack());
     }
 
-    // ── Undo ─────────────────────────────────────────────────────────────────
+    // ── Undo ──────────────────────────────────────────────────────────────────
     function undoLast() {
       if (!history.length) return;
       const last = history.pop();
@@ -878,14 +902,17 @@
     function renderModalList() {
       const list = document.getElementById('modal-track-list');
       const deleteAllBtn = document.getElementById('btn-delete-all');
+      const recoverAllBtn = document.getElementById('btn-recover-all');
 
       if (!toRemove.length) {
         list.innerHTML = '<div class="modal-empty">Nothing marked for removal.</div>';
         deleteAllBtn.disabled = true;
+        recoverAllBtn.disabled = true;
         return;
       }
 
       deleteAllBtn.disabled = false;
+      recoverAllBtn.disabled = false;
       list.innerHTML = '';
       toRemove.forEach((t, i) => {
         const row = document.createElement('div');
@@ -922,19 +949,7 @@
       btn.textContent = '…';
       const track = toRemove[idx];
       try {
-        if (source === 'liked') {
-          await apiFetch('/api/remove-liked', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ids: [track.id] }),
-          });
-        } else {
-          await apiFetch('/api/remove-playlist-tracks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ playlistId: selectedPlaylist.id, uris: [track.uri] }),
-          });
-        }
+        await apiDeleteTracks([track]);
         toRemove.splice(idx, 1);
         updateRemovalsBtn();
         renderModalList();
@@ -945,25 +960,25 @@
       }
     }
 
+    function recoverAllFromPanel() {
+      if (!toRemove.length) return;
+      toRemove.forEach(track => {
+        const hi = history.findLastIndex(h => h.action === 'remove' && h.track.id === track.id);
+        if (hi !== -1) history.splice(hi, 1);
+      });
+      toRemove = [];
+      updateUndoBtn();
+      updateRemovalsBtn();
+      closeRemovalsPanel();
+    }
+
     async function deleteAllFromPanel() {
       const btn = document.getElementById('btn-delete-all');
       if (!toRemove.length) return;
       btn.disabled = true;
       btn.textContent = 'Deleting…';
       try {
-        if (source === 'liked') {
-          await apiFetch('/api/remove-liked', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ids: toRemove.map(t => t.id) }),
-          });
-        } else {
-          await apiFetch('/api/remove-playlist-tracks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ playlistId: selectedPlaylist.id, uris: toRemove.map(t => t.uri) }),
-          });
-        }
+        await apiDeleteTracks(toRemove);
         toRemove = [];
         updateRemovalsBtn();
         closeRemovalsPanel();
@@ -988,7 +1003,7 @@
       setTimeout(() => btn.classList.remove('pressed'), 200);
     }
 
-    // ── Summary ──────────────────────────────────────────────────────────────
+    // ── Summary ───────────────────────────────────────────────────────────────
     function showSummary() {
       pausePlayback().catch(() => {});
       showStep('summary');
@@ -1028,28 +1043,13 @@
       }
     }
 
-    // ── Commit all deletions ──────────────────────────────────────────────────
     async function commitDeletions() {
       if (!toRemove.length) return;
       const btn = document.getElementById('confirm-btn');
       btn.disabled = true;
       btn.textContent = 'Deleting…';
-
       try {
-        let result;
-        if (source === 'liked') {
-          result = await apiFetch('/api/remove-liked', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ids: toRemove.map(t => t.id) }),
-          });
-        } else {
-          result = await apiFetch('/api/remove-playlist-tracks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ playlistId: selectedPlaylist.id, uris: toRemove.map(t => t.uri) }),
-          });
-        }
+        const result = await apiDeleteTracks(toRemove);
         showStep('done');
         document.getElementById('done-title').textContent =
           `Removed ${result.removed} track${result.removed === 1 ? '' : 's'}`;
@@ -1063,7 +1063,7 @@
       }
     }
 
-    // ── Navigation ───────────────────────────────────────────────────────────
+    // ── Navigation ────────────────────────────────────────────────────────────
     function goToSelect() {
       pausePlayback().catch(() => {});
       closeRemovalsPanel();
@@ -1087,7 +1087,7 @@
       });
     }
 
-    // ── Keyboard shortcuts ───────────────────────────────────────────────────
+    // ── Keyboard shortcuts ────────────────────────────────────────────────────
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') { closeRemovalsPanel(); return; }
       if (document.getElementById('step-review').classList.contains('hidden')) return;
@@ -1099,24 +1099,14 @@
       if (e.key === 'z' || e.key === 'Z')           { e.preventDefault(); undoLast(); }
     });
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
-    async function apiFetch(url, options = {}) {
-      const res = await fetch(url, options);
-      if (!res.ok) {
-        const err = new Error(`HTTP ${res.status}`);
-        err.status = res.status;
-        throw err;
-      }
-      return res.json();
-    }
-
+    // ── Helpers ───────────────────────────────────────────────────────────────
     function escHtml(str) {
       return String(str)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;')
         .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // ── Boot ─────────────────────────────────────────────────────────────────
+    // ── Boot ──────────────────────────────────────────────────────────────────
     init();
   </script>
 </body>
