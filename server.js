@@ -45,7 +45,24 @@ app.get('/callback', async (req, res) => {
   const { code, state, error } = req.query;
 
   if (error) return res.redirect('/?error=' + encodeURIComponent(error));
+
+  // Guard against duplicate callback hits (browser retry, redirect loop, etc.)
+  // oauthState is deleted before the async exchange so a second hit finds it gone.
+  if (!req.session.oauthState) {
+    if (req.session.accessToken) return res.redirect('/app');
+    return res.redirect('/?error=invalid_callback');
+  }
+
   if (state !== req.session.oauthState) return res.redirect('/?error=state_mismatch');
+
+  // Delete state and persist immediately — any duplicate request arriving after
+  // this point will hit the guard above and not attempt a second token exchange.
+  delete req.session.oauthState;
+  await new Promise((resolve, reject) =>
+    req.session.save(err => (err ? reject(err) : resolve()))
+  );
+
+  console.log('Token exchange › redirect_uri:', REDIRECT_URI);
 
   try {
     const tokenRes = await axios.post(
@@ -68,7 +85,6 @@ app.get('/callback', async (req, res) => {
     req.session.accessToken = tokenRes.data.access_token;
     req.session.refreshToken = tokenRes.data.refresh_token;
     req.session.tokenExpiry = Date.now() + tokenRes.data.expires_in * 1000;
-    delete req.session.oauthState;
     res.redirect('/app');
   } catch (err) {
     console.error('Token exchange error:', err.response?.data || err.message);
@@ -245,7 +261,7 @@ app.get('/app', ensureToken, (req, res) => res.sendFile(path.join(__dirname, 'pu
 
 // ── Start ──────────────────────────────────────────────────────────────────────
 
-app.listen(PORT, () => {
+app.listen(PORT, '127.0.0.1', () => {
   console.log('\n╔════════════════════════════════════════════════╗');
   console.log('║          Spotify Playlist Cleaner              ║');
   console.log('╚════════════════════════════════════════════════╝\n');
@@ -254,5 +270,5 @@ app.listen(PORT, () => {
   console.log('  2. Create an app (or use an existing one)');
   console.log(`  3. Add redirect URI: http://127.0.0.1:${PORT}/callback`);
   console.log('  4. Copy Client ID and Client Secret into .env');
-  console.log(`\nServer running at: http://localhost:${PORT}\n`);
+  console.log(`\nServer running at: http://127.0.0.1:${PORT}\n`);
 });
