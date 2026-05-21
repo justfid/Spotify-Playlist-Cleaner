@@ -281,7 +281,7 @@ app.get('/api/track-analysis/:id', ensureToken, async (req, res) => {
       duration: s.duration,
       loudness: s.loudness,
     }));
-    res.json({ sections });
+    res.json({ sections, duration: r.data.track.duration });
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed' });
   }

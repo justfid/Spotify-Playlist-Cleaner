@@ -622,7 +622,7 @@
 
       // Seek to the loudest section — bail if the user already moved on
       if (analysis && currentPlayingUri === uri) {
-        const best = findLoudestSection(analysis.sections);
+        const best = findLoudestSection(analysis.sections, analysis.duration);
         if (best && best.start > 3) {
           player.seek(Math.round(best.start * 1000));
         }
@@ -630,14 +630,19 @@
     }
 
     // Find the section most likely to be the main part of the song.
-    // Skips the opening section when there are enough sections to avoid intros,
-    // filters out very short clips (transitions), then picks the loudest.
-    function findLoudestSection(sections) {
+    // Skips the opening section (intro), filters out short transitions,
+    // excludes anything that starts with less than 30s left in the track,
+    // then picks the loudest remaining candidate.
+    function findLoudestSection(sections, trackDuration) {
       if (!sections || !sections.length) return null;
       const pool = sections.length >= 4 ? sections.slice(1) : sections;
-      const candidates = pool.filter(s => s.duration >= 10);
-      const source = candidates.length ? candidates : pool;
-      return source.reduce((best, s) => s.loudness > best.loudness ? s : best);
+      const candidates = pool.filter(s =>
+        s.duration >= 10 &&
+        (trackDuration == null || s.start + 30 <= trackDuration)
+      );
+      const source = candidates.length ? candidates : pool.filter(s => s.duration >= 10);
+      const fallback = source.length ? source : pool;
+      return fallback.reduce((best, s) => s.loudness > best.loudness ? s : best);
     }
 
     async function pausePlayback() {
