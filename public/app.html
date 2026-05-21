@@ -553,6 +553,7 @@
     let deviceId = null;
     let isMuted = false;
     let lastVolume = 0.5;
+    let currentPlayingUri = null;   // used to cancel stale seek after track changes
 
     // ── Spotify Web Playback SDK ──────────────────────────────────────────────
     function initPlayer() {
@@ -574,7 +575,8 @@
         // If we're already in review when the player connects, start playing
         if (!document.getElementById('step-review').classList.contains('hidden') &&
             currentIndex < tracks.length) {
-          playTrack(tracks[currentIndex].uri).catch(() => {});
+          const t = tracks[currentIndex];
+          playTrack(t.uri, t.id).catch(() => {});
         }
       });
 
@@ -604,13 +606,38 @@
     }
 
     // ── Playback helpers ──────────────────────────────────────────────────────
-    async function playTrack(uri) {
+    async function playTrack(uri, id) {
       if (!deviceId) return;
-      await apiFetch('/api/player/play', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ device_id: deviceId, uri }),
-      });
+      currentPlayingUri = uri;
+
+      // Start playback and fetch audio analysis in parallel
+      const [, analysis] = await Promise.all([
+        apiFetch('/api/player/play', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ device_id: deviceId, uri }),
+        }),
+        apiFetch(`/api/track-analysis/${id}`).catch(() => null),
+      ]);
+
+      // Seek to the loudest section — bail if the user already moved on
+      if (analysis && currentPlayingUri === uri) {
+        const best = findLoudestSection(analysis.sections);
+        if (best && best.start > 3) {
+          player.seek(Math.round(best.start * 1000));
+        }
+      }
+    }
+
+    // Find the section most likely to be the main part of the song.
+    // Skips the opening section when there are enough sections to avoid intros,
+    // filters out very short clips (transitions), then picks the loudest.
+    function findLoudestSection(sections) {
+      if (!sections || !sections.length) return null;
+      const pool = sections.length >= 4 ? sections.slice(1) : sections;
+      const candidates = pool.filter(s => s.duration >= 10);
+      const source = candidates.length ? candidates : pool;
+      return source.reduce((best, s) => s.loudness > best.loudness ? s : best);
     }
 
     async function pausePlayback() {
@@ -748,8 +775,8 @@
       document.getElementById('track-artist').textContent = t.artists;
       document.getElementById('track-album').textContent = t.album;
 
-      // Start full track playback via the SDK device
-      playTrack(t.uri).catch(() => {});
+      // Start full track playback via the SDK device, then seek to the loudest section
+      playTrack(t.uri, t.id).catch(() => {});
     }
 
     // ── Decision ─────────────────────────────────────────────────────────────

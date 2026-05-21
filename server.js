@@ -273,6 +273,20 @@ app.post('/api/remove-playlist-tracks', ensureToken, async (req, res) => {
 
 // ── Playback control ──────────────────────────────────────────────────────────
 
+app.get('/api/track-analysis/:id', ensureToken, async (req, res) => {
+  try {
+    const r = await spotifyAPI(req).get(`/audio-analysis/${req.params.id}`);
+    const sections = r.data.sections.map(s => ({
+      start: s.start,
+      duration: s.duration,
+      loudness: s.loudness,
+    }));
+    res.json({ sections });
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed' });
+  }
+});
+
 app.put('/api/player/play', ensureToken, async (req, res) => {
   const { device_id, uri } = req.body;
   if (!device_id || !uri) return res.status(400).json({ error: 'device_id and uri required' });
