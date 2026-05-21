@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spotify Cleaner</title>
+  <!-- SDK must start loading early; it fires window.onSpotifyWebPlaybackSDKReady when ready -->
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -31,9 +33,7 @@
 
     /* ── Header ── */
     header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
       padding: 1rem 1.5rem;
       border-bottom: 1px solid var(--border);
     }
@@ -42,44 +42,29 @@
 
     .logo-dot {
       width: 28px; height: 28px;
-      background: var(--green);
-      border-radius: 50%;
+      background: var(--green); border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
     }
-
     .logo-dot svg { width: 16px; height: 16px; fill: #000; }
     .app-title { font-weight: 700; font-size: 1rem; }
     .user-info { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--muted); }
 
     .avatar {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: var(--surface2);
+      width: 28px; height: 28px; border-radius: 50%;
+      object-fit: cover; background: var(--surface2);
     }
 
     .logout-btn {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 0.3rem 0.75rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.8rem;
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      padding: 0.3rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
       transition: color 0.15s, border-color 0.15s;
     }
     .logout-btn:hover { color: var(--text); border-color: #555; }
 
-    /* ── Main layout ── */
+    /* ── Main ── */
     main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem;
-      max-width: 600px;
-      margin: 0 auto;
-      width: 100%;
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      padding: 2rem 1rem; max-width: 600px; margin: 0 auto; width: 100%;
     }
 
     /* ── Source selector ── */
@@ -88,21 +73,12 @@
     .step-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
     .step-sub { color: var(--muted); margin-bottom: 2rem; font-size: 0.9rem; }
 
-    .source-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
+    .source-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
 
     .source-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      text-align: center;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s; text-align: center;
     }
     .source-card:hover, .source-card.active { border-color: var(--green); background: #0f1f14; }
     .source-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
@@ -113,24 +89,17 @@
     .picker-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
 
     .playlist-list {
-      max-height: 240px;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--surface);
+      max-height: 240px; overflow-y: auto;
+      border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
     }
     .playlist-list::-webkit-scrollbar { width: 4px; }
     .playlist-list::-webkit-scrollbar-track { background: transparent; }
     .playlist-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     .playlist-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.65rem 0.9rem;
-      cursor: pointer;
-      transition: background 0.1s;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.65rem 0.9rem; cursor: pointer;
+      transition: background 0.1s; border-bottom: 1px solid var(--border);
     }
     .playlist-item:last-child { border-bottom: none; }
     .playlist-item:hover, .playlist-item.selected { background: var(--surface2); }
@@ -143,16 +112,9 @@
     .playlist-item.selected .playlist-check { opacity: 1; }
 
     .start-btn {
-      width: 100%;
-      background: var(--green);
-      color: #000;
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 0.9rem;
-      border: none;
-      border-radius: 500px;
-      cursor: pointer;
-      letter-spacing: 0.04em;
+      width: 100%; background: var(--green); color: #000;
+      font-weight: 700; font-size: 0.95rem; padding: 0.9rem;
+      border: none; border-radius: 500px; cursor: pointer; letter-spacing: 0.04em;
       transition: background 0.15s, transform 0.15s;
     }
     .start-btn:hover:not(:disabled) { background: var(--green-hover); transform: scale(1.02); }
@@ -162,115 +124,68 @@
     #step-loading { text-align: center; animation: fadeIn 0.3s ease; }
 
     .spinner {
-      width: 40px; height: 40px;
-      border: 3px solid var(--border);
-      border-top-color: var(--green);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 1.5rem;
+      width: 40px; height: 40px; border: 3px solid var(--border);
+      border-top-color: var(--green); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 1.5rem;
     }
     .loading-text { color: var(--muted); font-size: 0.9rem; }
 
-    /* ── Review step ── */
+    /* ── Review ── */
     #step-review { width: 100%; animation: fadeIn 0.3s ease; }
 
     .progress-bar-wrap {
-      width: 100%;
-      height: 3px;
-      background: var(--border);
-      border-radius: 2px;
-      margin-bottom: 1.5rem;
-      overflow: hidden;
+      width: 100%; height: 3px; background: var(--border);
+      border-radius: 2px; margin-bottom: 1.5rem; overflow: hidden;
     }
     .progress-bar-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.3s ease; }
 
     .review-top-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;
     }
-
     .track-counter { color: var(--muted); font-size: 0.82rem; }
 
     .removals-btn {
-      background: #2a0e0e;
-      border: 1px solid #5a1a1a;
-      color: #ff8080;
-      border-radius: 20px;
-      padding: 0.3rem 0.9rem;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 600;
+      background: #2a0e0e; border: 1px solid #5a1a1a; color: #ff8080;
+      border-radius: 20px; padding: 0.3rem 0.9rem; cursor: pointer;
+      font-size: 0.8rem; font-weight: 600;
       transition: background 0.15s, border-color 0.15s;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
+      display: flex; align-items: center; gap: 0.4rem;
     }
     .removals-btn:hover { background: #3a1212; border-color: var(--red); }
     .removals-btn .badge {
-      background: var(--red);
-      color: #fff;
-      border-radius: 10px;
-      padding: 0.05rem 0.45rem;
-      font-size: 0.72rem;
+      background: var(--red); color: #fff;
+      border-radius: 10px; padding: 0.05rem 0.45rem; font-size: 0.72rem;
     }
 
     /* Track card */
     .track-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      margin-bottom: 1.5rem;
-      position: relative;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; position: relative;
     }
-
     .album-art-wrap { position: relative; width: 100%; padding-top: 100%; }
-
     .album-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-
     .no-art {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--surface2);
-      font-size: 4rem;
+      position: absolute; inset: 0; display: flex; align-items: center;
+      justify-content: center; background: var(--surface2); font-size: 4rem;
     }
 
     .audio-indicator {
-      position: absolute;
-      bottom: 1rem; right: 1rem;
-      background: rgba(0,0,0,0.7);
-      border-radius: 20px;
-      padding: 0.3rem 0.6rem;
-      display: flex; align-items: center; gap: 2px;
-      opacity: 0;
-      transition: opacity 0.3s;
+      position: absolute; bottom: 1rem; right: 1rem;
+      background: rgba(0,0,0,0.7); border-radius: 20px;
+      padding: 0.3rem 0.6rem; display: flex; align-items: center; gap: 2px;
+      opacity: 0; transition: opacity 0.3s;
     }
     .audio-indicator.playing { opacity: 1; }
 
     .wave-bar {
-      width: 3px;
-      background: var(--green);
-      border-radius: 2px;
+      width: 3px; background: var(--green); border-radius: 2px;
       animation: wave 0.8s ease-in-out infinite;
     }
     .wave-bar:nth-child(2) { animation-delay: 0.1s; }
     .wave-bar:nth-child(3) { animation-delay: 0.2s; }
     .wave-bar:nth-child(4) { animation-delay: 0.3s; }
 
-    .no-preview-badge {
-      position: absolute;
-      bottom: 1rem; right: 1rem;
-      background: rgba(0,0,0,0.75);
-      border-radius: 20px;
-      padding: 0.25rem 0.7rem;
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-
     .track-info { padding: 1.25rem; }
-
     .track-name {
       font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -285,83 +200,81 @@
     }
 
     /* Action buttons */
-    .action-row {
-      display: flex; align-items: center; justify-content: center;
-      gap: 1rem; margin-bottom: 1rem;
-    }
+    .action-row { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem; }
 
     .action-btn {
-      display: flex; flex-direction: column; align-items: center;
-      gap: 0.4rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-radius: 12px;
-      padding: 1rem 1.4rem;
-      cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      border-radius: 12px; padding: 1rem 1.4rem; cursor: pointer;
       font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
-      transition: transform 0.15s, background 0.15s, border-color 0.15s;
-      min-width: 90px;
+      transition: transform 0.15s, background 0.15s, border-color 0.15s; min-width: 90px;
     }
     .action-btn .icon { font-size: 1.5rem; }
     .action-btn:hover { transform: scale(1.06); }
     .btn-remove:hover, .btn-remove.pressed { background: #2a0e0e; border-color: var(--red); color: var(--red); }
     .btn-keep:hover, .btn-keep.pressed { background: #0a1f11; border-color: var(--green); color: var(--green); }
 
-    .secondary-row {
-      display: flex; gap: 0.6rem; justify-content: center; margin-bottom: 0.75rem;
+    /* Volume row */
+    .volume-row {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 0.75rem; padding: 0 0.25rem;
     }
 
+    .btn-mute {
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 8px; padding: 0.4rem 0.6rem; cursor: pointer; font-size: 0.9rem;
+      transition: color 0.15s, border-color 0.15s; flex-shrink: 0; line-height: 1;
+    }
+    .btn-mute:hover { color: var(--text); border-color: #555; }
+
+    .volume-slider {
+      flex: 1; -webkit-appearance: none; appearance: none;
+      height: 4px; border-radius: 2px; background: var(--border);
+      outline: none; cursor: pointer;
+    }
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--green); cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.25); }
+    .volume-slider::-moz-range-thumb {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--green); cursor: pointer; border: none;
+    }
+
+    .secondary-row { display: flex; gap: 0.6rem; justify-content: center; margin-bottom: 0.75rem; }
+
     .btn-secondary {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 8px;
-      padding: 0.5rem 1.2rem;
-      cursor: pointer;
-      font-size: 0.8rem;
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 8px; padding: 0.5rem 1.2rem; cursor: pointer; font-size: 0.8rem;
       transition: color 0.15s, border-color 0.15s;
     }
     .btn-secondary:hover:not(:disabled) { color: var(--text); border-color: #555; }
     .btn-secondary:disabled { opacity: 0.25; cursor: default; }
 
-    .key-hints {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.75rem;
-      margin-top: 0.25rem;
-    }
+    .key-hints { text-align: center; color: var(--muted); font-size: 0.75rem; margin-top: 0.25rem; }
     kbd {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 0.1rem 0.4rem;
-      font-family: inherit;
-      font-size: 0.72rem;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 0.1rem 0.4rem; font-family: inherit; font-size: 0.72rem;
     }
 
-    /* ── Summary step ── */
+    /* ── Summary ── */
     #step-summary { width: 100%; animation: fadeIn 0.3s ease; }
-
     .summary-header { text-align: center; margin-bottom: 2rem; }
     .summary-count { font-size: 2.5rem; font-weight: 800; color: var(--red); display: block; }
 
     .summary-list {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      max-height: 320px;
-      overflow-y: auto;
-      margin-bottom: 1.5rem;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      max-height: 320px; overflow-y: auto; margin-bottom: 1.5rem;
     }
     .summary-list::-webkit-scrollbar { width: 4px; }
     .summary-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     .summary-track {
       display: flex; align-items: center; gap: 0.75rem;
-      padding: 0.65rem 0.9rem;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
+      padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--border); font-size: 0.85rem;
     }
     .summary-track:last-child { border-bottom: none; }
     .summary-thumb { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
@@ -378,142 +291,86 @@
     .confirm-btn:disabled { opacity: 0.5; cursor: default; }
 
     .cancel-btn {
-      width: 100%; background: none;
-      border: 1px solid var(--border); color: var(--muted);
-      font-weight: 600; font-size: 0.9rem; padding: 0.8rem;
-      border-radius: 500px; cursor: pointer;
+      width: 100%; background: none; border: 1px solid var(--border); color: var(--muted);
+      font-weight: 600; font-size: 0.9rem; padding: 0.8rem; border-radius: 500px; cursor: pointer;
       transition: color 0.15s, border-color 0.15s;
     }
     .cancel-btn:hover { color: var(--text); border-color: #555; }
-
     .empty-summary { text-align: center; padding: 2rem; color: var(--muted); }
 
-    /* ── Done step ── */
+    /* ── Done ── */
     #step-done { text-align: center; animation: fadeIn 0.3s ease; }
     .done-icon { font-size: 3rem; margin-bottom: 1rem; }
     .done-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
     .done-sub { color: var(--muted); margin-bottom: 2rem; }
 
     .restart-btn {
-      background: var(--green); color: #000;
-      font-weight: 700; padding: 0.85rem 2rem;
-      border: none; border-radius: 500px; cursor: pointer;
-      font-size: 0.95rem; transition: background 0.15s;
+      background: var(--green); color: #000; font-weight: 700;
+      padding: 0.85rem 2rem; border: none; border-radius: 500px;
+      cursor: pointer; font-size: 0.95rem; transition: background 0.15s;
     }
     .restart-btn:hover { background: var(--green-hover); }
 
     /* ── Removals modal ── */
     .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.7);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
       display: flex; align-items: flex-end; justify-content: center;
-      z-index: 200;
-      animation: fadeIn 0.2s ease;
+      z-index: 200; animation: fadeIn 0.2s ease;
     }
-
     .modal-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px 16px 0 0;
-      width: 100%;
-      max-width: 600px;
-      max-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px 16px 0 0; width: 100%; max-width: 600px;
+      max-height: 80vh; display: flex; flex-direction: column; overflow: hidden;
     }
-
     .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
-
     .modal-title { font-weight: 700; font-size: 1rem; }
-
     .modal-header-actions { display: flex; gap: 0.5rem; align-items: center; }
 
     .btn-delete-all {
-      background: var(--red);
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 0.35rem 0.8rem;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s;
+      background: var(--red); color: #fff; border: none;
+      border-radius: 6px; padding: 0.35rem 0.8rem; font-size: 0.8rem;
+      font-weight: 700; cursor: pointer; transition: background 0.15s;
     }
     .btn-delete-all:hover { background: var(--red-hover); }
     .btn-delete-all:disabled { opacity: 0.5; cursor: default; }
 
     .btn-close-modal {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 6px;
-      padding: 0.35rem 0.7rem;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: color 0.15s, border-color 0.15s;
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 6px; padding: 0.35rem 0.7rem; font-size: 0.9rem;
+      cursor: pointer; transition: color 0.15s, border-color 0.15s;
     }
     .btn-close-modal:hover { color: var(--text); border-color: #555; }
 
-    .modal-empty {
-      padding: 2.5rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
+    .modal-empty { padding: 2.5rem; text-align: center; color: var(--muted); font-size: 0.9rem; }
     .modal-track-list { overflow-y: auto; flex: 1; }
     .modal-track-list::-webkit-scrollbar { width: 4px; }
     .modal-track-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     .modal-track-row {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.65rem 1.25rem;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.65rem 1.25rem; border-bottom: 1px solid var(--border);
     }
     .modal-track-row:last-child { border-bottom: none; }
-
     .modal-thumb { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
-
     .modal-track-info { flex: 1; min-width: 0; }
     .modal-track-name { font-size: 0.88rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .modal-track-artist { font-size: 0.78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
     .modal-track-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
 
     .btn-panel-undo {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 6px;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: color 0.15s, border-color 0.15s;
-      white-space: nowrap;
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem;
+      cursor: pointer; transition: color 0.15s, border-color 0.15s; white-space: nowrap;
     }
     .btn-panel-undo:hover { color: var(--text); border-color: #555; }
 
     .btn-delete-now {
-      background: none;
-      border: 1px solid #5a1a1a;
-      color: #ff8080;
-      border-radius: 6px;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-      white-space: nowrap;
+      background: none; border: 1px solid #5a1a1a; color: #ff8080;
+      border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s; white-space: nowrap;
     }
     .btn-delete-now:hover { background: #2a0e0e; border-color: var(--red); }
     .btn-delete-now:disabled { opacity: 0.5; cursor: default; }
@@ -521,25 +378,14 @@
     /* ── Utilities ── */
     .hidden { display: none !important; }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes wave {
-      0%, 100% { height: 6px; }
-      50% { height: 16px; }
-    }
+    @keyframes wave { 0%, 100% { height: 6px; } 50% { height: 16px; } }
 
-    /* Swipe feedback overlay */
     .swipe-overlay {
-      position: fixed; inset: 0;
-      pointer-events: none;
+      position: fixed; inset: 0; pointer-events: none;
       display: flex; align-items: center; justify-content: center;
-      font-size: 5rem;
-      opacity: 0;
-      transition: opacity 0.15s;
-      z-index: 100;
+      font-size: 5rem; opacity: 0; transition: opacity 0.15s; z-index: 100;
     }
     .swipe-overlay.show-remove { background: rgba(232,64,64,0.15); opacity: 1; }
     .swipe-overlay.show-keep { background: rgba(29,185,84,0.15); opacity: 1; }
@@ -549,7 +395,6 @@
 
   <div class="swipe-overlay" id="swipe-overlay"></div>
 
-  <!-- Header -->
   <header>
     <div class="header-left">
       <div class="logo-dot">
@@ -589,7 +434,7 @@
         <div class="playlist-list" id="playlist-list"></div>
       </div>
 
-      <button class="start-btn" id="start-btn" disabled onclick="startReview(event)">Start Reviewing</button>
+      <button class="start-btn" id="start-btn" disabled onclick="startReview()">Start Reviewing</button>
     </div>
 
     <!-- Step 2: Loading -->
@@ -621,7 +466,6 @@
             <div class="wave-bar" style="height:6px"></div>
             <div class="wave-bar" style="height:10px"></div>
           </div>
-          <div class="no-preview-badge hidden" id="no-preview-badge">No preview</div>
         </div>
         <div class="track-info">
           <div class="track-name" id="track-name"></div>
@@ -641,13 +485,20 @@
         </button>
       </div>
 
+      <div class="volume-row">
+        <button class="btn-mute" id="btn-mute" onclick="toggleMute()">🔊</button>
+        <input type="range" class="volume-slider" id="volume-slider"
+               min="0" max="100" value="50" oninput="handleVolumeChange(this.value)" />
+      </div>
+
       <div class="secondary-row">
         <button class="btn-secondary" id="btn-undo" onclick="undoLast()" disabled>↩ Undo</button>
         <button class="btn-secondary" onclick="decide('skip')">↓ Skip</button>
       </div>
 
       <div class="key-hints">
-        <kbd>←</kbd> Remove &nbsp;·&nbsp; <kbd>→</kbd> Keep &nbsp;·&nbsp; <kbd>↓</kbd>/<kbd>Space</kbd> Skip &nbsp;·&nbsp; <kbd>Z</kbd> Undo
+        <kbd>←</kbd> Remove &nbsp;·&nbsp; <kbd>→</kbd> Keep &nbsp;·&nbsp;
+        <kbd>↓</kbd>/<kbd>Space</kbd> Skip &nbsp;·&nbsp; <kbd>Z</kbd> Undo
       </div>
     </div>
 
@@ -657,9 +508,7 @@
         <span class="summary-count" id="remove-count">0</span>
         <p style="color:var(--muted); margin-top:0.5rem;" id="summary-subtitle"></p>
       </div>
-
       <div id="summary-list-wrap"></div>
-
       <button class="confirm-btn" id="confirm-btn" onclick="commitDeletions()">Delete these tracks from Spotify</button>
       <button class="cancel-btn" onclick="goToSelect()">Cancel, start over</button>
     </div>
@@ -676,7 +525,7 @@
 
   <!-- Removals panel modal -->
   <div id="removals-modal" class="modal-overlay hidden">
-    <div class="modal-panel" id="modal-panel">
+    <div class="modal-panel">
       <div class="modal-header">
         <span class="modal-title">Marked for removal</span>
         <div class="modal-header-actions">
@@ -689,6 +538,9 @@
   </div>
 
   <script>
+    // ── SDK callback — must be assigned before the SDK fires it ──────────────
+    window.onSpotifyWebPlaybackSDKReady = initPlayer;
+
     // ── State ────────────────────────────────────────────────────────────────
     let source = null;
     let selectedPlaylist = null;
@@ -697,8 +549,91 @@
     let currentIndex = 0;
     let toRemove = [];
     let history = [];
-    let autoAdvanceTimer = null;
-    let audio = null;           // created inside Start button gesture
+    let player = null;
+    let deviceId = null;
+    let isMuted = false;
+    let lastVolume = 0.5;
+
+    // ── Spotify Web Playback SDK ──────────────────────────────────────────────
+    function initPlayer() {
+      player = new Spotify.Player({
+        name: 'Trim',
+        getOAuthToken: cb => {
+          // Always fetch the current token from our server so refreshes are handled
+          fetch('/api/token')
+            .then(r => r.json())
+            .then(d => cb(d.access_token))
+            .catch(() => {});
+        },
+        volume: lastVolume,
+      });
+
+      player.addListener('ready', ({ device_id }) => {
+        deviceId = device_id;
+        console.log('Spotify player ready, device_id:', device_id);
+        // If we're already in review when the player connects, start playing
+        if (!document.getElementById('step-review').classList.contains('hidden') &&
+            currentIndex < tracks.length) {
+          playTrack(tracks[currentIndex].uri).catch(() => {});
+        }
+      });
+
+      player.addListener('not_ready', () => {
+        console.warn('Spotify player went offline');
+        deviceId = null;
+      });
+
+      // Mirror Spotify's actual playing state in the wave indicator
+      player.addListener('player_state_changed', state => {
+        if (!state) return;
+        document.getElementById('audio-indicator')
+          .classList.toggle('playing', !state.paused);
+      });
+
+      player.addListener('account_error', ({ message }) => {
+        console.error('Account error (Premium required):', message);
+        document.getElementById('track-counter').textContent =
+          '⚠ Spotify Premium is required for full playback';
+      });
+
+      player.addListener('initialization_error', ({ message }) => console.error('Init error:', message));
+      player.addListener('authentication_error', ({ message }) => console.error('Auth error:', message));
+      player.addListener('playback_error', ({ message }) => console.error('Playback error:', message));
+
+      player.connect();
+    }
+
+    // ── Playback helpers ──────────────────────────────────────────────────────
+    async function playTrack(uri) {
+      if (!deviceId) return;
+      await apiFetch('/api/player/play', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ device_id: deviceId, uri }),
+      });
+    }
+
+    async function pausePlayback() {
+      if (!deviceId) return;
+      await apiFetch('/api/player/pause', { method: 'PUT' }).catch(() => {});
+    }
+
+    // ── Volume ────────────────────────────────────────────────────────────────
+    function toggleMute() {
+      if (!player) return;
+      isMuted = !isMuted;
+      player.setVolume(isMuted ? 0 : lastVolume);
+      document.getElementById('btn-mute').textContent = isMuted ? '🔇' : '🔊';
+      document.getElementById('volume-slider').value = isMuted ? 0 : Math.round(lastVolume * 100);
+    }
+
+    function handleVolumeChange(val) {
+      if (!player) return;
+      lastVolume = val / 100;
+      isMuted = lastVolume === 0;
+      player.setVolume(lastVolume);
+      document.getElementById('btn-mute').textContent = isMuted ? '🔇' : '🔊';
+    }
 
     // ── Init ─────────────────────────────────────────────────────────────────
     async function init() {
@@ -756,34 +691,21 @@
     }
 
     // ── Start review ─────────────────────────────────────────────────────────
-    // The audio element is created here — inside the click handler — so the
-    // browser grants autoplay permission to this object for the entire session.
-    // Every subsequent track just swaps .src on the same object.
-    function startReview(event) {
-      audio = new Audio();
-      audio.volume = 0.6;
-      // Calling play() synchronously in the gesture frame activates the element.
-      // It rejects (no src yet) but that's fine — the activation sticks.
-      audio.play().catch(() => {});
-
-      _loadTracks();
-    }
-
-    async function _loadTracks() {
+    async function startReview() {
       showStep('loading');
       try {
-        let endpoint;
-        if (source === 'liked') {
-          endpoint = '/api/liked-songs';
-          document.getElementById('loading-text').textContent = 'Loading liked songs…';
-        } else {
-          endpoint = `/api/playlist/${selectedPlaylist.id}/tracks`;
-          document.getElementById('loading-text').textContent = `Loading "${selectedPlaylist.name}"…`;
-        }
+        const endpoint = source === 'liked'
+          ? '/api/liked-songs'
+          : `/api/playlist/${selectedPlaylist.id}/tracks`;
+        document.getElementById('loading-text').textContent = source === 'liked'
+          ? 'Loading liked songs…'
+          : `Loading "${selectedPlaylist.name}"…`;
+
         tracks = await apiFetch(endpoint);
         currentIndex = 0;
         toRemove = [];
         history = [];
+
         if (!tracks.length) {
           alert('No tracks found.');
           showStep('select');
@@ -801,8 +723,6 @@
 
     // ── Track rendering ──────────────────────────────────────────────────────
     function renderTrack() {
-      clearAutoAdvance();
-
       if (currentIndex >= tracks.length) {
         showSummary();
         return;
@@ -810,9 +730,8 @@
 
       const t = tracks[currentIndex];
       const total = tracks.length;
-      const pct = (currentIndex / total) * 100;
 
-      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-fill').style.width = (currentIndex / total * 100) + '%';
       document.getElementById('track-counter').textContent =
         `Track ${currentIndex + 1} of ${total}`;
 
@@ -829,53 +748,13 @@
       document.getElementById('track-artist').textContent = t.artists;
       document.getElementById('track-album').textContent = t.album;
 
-      // Audio: pause first, then swap src on the same activated element
-      if (audio) audio.pause();
-
-      if (t.preview_url) {
-        document.getElementById('no-preview-badge').classList.add('hidden');
-        document.getElementById('audio-indicator').classList.add('playing');
-        audio.src = t.preview_url;
-        audio.play().catch(() => {
-          document.getElementById('audio-indicator').classList.remove('playing');
-        });
-      } else {
-        if (audio) audio.src = '';
-        document.getElementById('no-preview-badge').textContent = 'No preview — skipping in 3s';
-        document.getElementById('no-preview-badge').classList.remove('hidden');
-        document.getElementById('audio-indicator').classList.remove('playing');
-        // Auto-advance after 3 seconds when there's no preview to listen to
-        let countdown = 3;
-        autoAdvanceTimer = setInterval(() => {
-          countdown--;
-          if (countdown > 0) {
-            document.getElementById('no-preview-badge').textContent =
-              `No preview — skipping in ${countdown}s`;
-          } else {
-            clearAutoAdvance();
-            decide('skip');
-          }
-        }, 1000);
-      }
-    }
-
-    function clearAutoAdvance() {
-      if (autoAdvanceTimer) {
-        clearInterval(autoAdvanceTimer);
-        autoAdvanceTimer = null;
-      }
-    }
-
-    function stopAudio() {
-      clearAutoAdvance();
-      if (audio) { audio.pause(); audio.src = ''; }
-      document.getElementById('audio-indicator').classList.remove('playing');
+      // Start full track playback via the SDK device
+      playTrack(t.uri).catch(() => {});
     }
 
     // ── Decision ─────────────────────────────────────────────────────────────
     function decide(action) {
       if (currentIndex >= tracks.length) return;
-      clearAutoAdvance();
 
       history.push({ action, track: tracks[currentIndex] });
 
@@ -891,13 +770,14 @@
       currentIndex++;
       updateUndoBtn();
       updateRemovalsBtn();
-      renderTrack();
+
+      // Pause current track, then start the next one
+      pausePlayback().finally(() => renderTrack());
     }
 
-    // ── Undo (main button — last decision) ───────────────────────────────────
+    // ── Undo ─────────────────────────────────────────────────────────────────
     function undoLast() {
       if (!history.length) return;
-      clearAutoAdvance();
       const last = history.pop();
       if (last.action === 'remove') {
         const idx = toRemove.findLastIndex(t => t.id === last.track.id);
@@ -906,7 +786,7 @@
       currentIndex--;
       updateUndoBtn();
       updateRemovalsBtn();
-      renderTrack();
+      pausePlayback().finally(() => renderTrack());
     }
 
     function updateUndoBtn() {
@@ -915,10 +795,9 @@
 
     // ── Removals panel ────────────────────────────────────────────────────────
     function updateRemovalsBtn() {
-      const btn = document.getElementById('removals-btn');
       const n = toRemove.length;
       document.getElementById('removals-badge').textContent = n;
-      btn.classList.toggle('hidden', n === 0);
+      document.getElementById('removals-btn').classList.toggle('hidden', n === 0);
     }
 
     function openRemovalsPanel() {
@@ -945,7 +824,6 @@
       toRemove.forEach((t, i) => {
         const row = document.createElement('div');
         row.className = 'modal-track-row';
-        row.dataset.trackId = t.id;
         row.innerHTML = `
           <img class="modal-thumb" src="${t.albumArt || ''}" onerror="this.style.display='none'" />
           <div class="modal-track-info">
@@ -961,13 +839,10 @@
       });
     }
 
-    // Move track back into the unseen queue (inserts at current position)
     function undoFromPanel(idx) {
       if (idx < 0 || idx >= toRemove.length) return;
       const track = toRemove.splice(idx, 1)[0];
-      // Put it back into tracks at currentIndex so it's the next one seen
       tracks.splice(currentIndex, 0, track);
-      // Remove from history too if it's there
       const hi = history.findLastIndex(h => h.action === 'remove' && h.track.id === track.id);
       if (hi !== -1) history.splice(hi, 1);
       updateUndoBtn();
@@ -979,7 +854,6 @@
       if (idx < 0 || idx >= toRemove.length) return;
       btn.disabled = true;
       btn.textContent = '…';
-
       const track = toRemove[idx];
       try {
         if (source === 'liked') {
@@ -1010,7 +884,6 @@
       if (!toRemove.length) return;
       btn.disabled = true;
       btn.textContent = 'Deleting…';
-
       try {
         if (source === 'liked') {
           await apiFetch('/api/remove-liked', {
@@ -1051,7 +924,7 @@
 
     // ── Summary ──────────────────────────────────────────────────────────────
     function showSummary() {
-      stopAudio();
+      pausePlayback().catch(() => {});
       showStep('summary');
 
       const count = toRemove.length;
@@ -1089,7 +962,7 @@
       }
     }
 
-    // ── Commit all deletions (end-of-session) ─────────────────────────────────
+    // ── Commit all deletions ──────────────────────────────────────────────────
     async function commitDeletions() {
       if (!toRemove.length) return;
       const btn = document.getElementById('confirm-btn');
@@ -1126,7 +999,7 @@
 
     // ── Navigation ───────────────────────────────────────────────────────────
     function goToSelect() {
-      stopAudio();
+      pausePlayback().catch(() => {});
       closeRemovalsPanel();
       source = null;
       selectedPlaylist = null;
@@ -1134,11 +1007,11 @@
       toRemove = [];
       history = [];
       currentIndex = 0;
-      audio = null;
       document.getElementById('card-liked').classList.remove('active');
       document.getElementById('card-playlist').classList.remove('active');
       document.getElementById('playlist-picker').classList.add('hidden');
       document.getElementById('start-btn').disabled = true;
+      document.getElementById('audio-indicator').classList.remove('playing');
       showStep('select');
     }
 
@@ -1150,19 +1023,14 @@
 
     // ── Keyboard shortcuts ───────────────────────────────────────────────────
     document.addEventListener('keydown', e => {
-      // Close modal with Escape
-      if (e.key === 'Escape') {
-        closeRemovalsPanel();
-        return;
-      }
+      if (e.key === 'Escape') { closeRemovalsPanel(); return; }
       if (document.getElementById('step-review').classList.contains('hidden')) return;
-      // Don't fire shortcuts when modal is open
       if (!document.getElementById('removals-modal').classList.contains('hidden')) return;
 
-      if (e.key === 'ArrowLeft')            { e.preventDefault(); decide('remove'); }
-      if (e.key === 'ArrowRight')           { e.preventDefault(); decide('keep'); }
-      if (e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); decide('skip'); }
-      if (e.key === 'z' || e.key === 'Z')   { e.preventDefault(); undoLast(); }
+      if (e.key === 'ArrowLeft')                    { e.preventDefault(); decide('remove'); }
+      if (e.key === 'ArrowRight')                   { e.preventDefault(); decide('keep'); }
+      if (e.key === 'ArrowDown' || e.key === ' ')   { e.preventDefault(); decide('skip'); }
+      if (e.key === 'z' || e.key === 'Z')           { e.preventDefault(); undoLast(); }
     });
 
     // ── Helpers ──────────────────────────────────────────────────────────────
@@ -1178,10 +1046,8 @@
 
     function escHtml(str) {
       return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     // ── Boot ─────────────────────────────────────────────────────────────────

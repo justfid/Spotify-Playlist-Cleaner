@@ -15,6 +15,9 @@ const SCOPES = [
   'playlist-read-collaborative',
   'playlist-modify-public',
   'playlist-modify-private',
+  'streaming',
+  'user-read-playback-state',
+  'user-modify-playback-state',
 ].join(' ');
 
 app.use(express.json());
@@ -23,7 +26,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 },
+  cookie: { secure: false, sameSite: 'lax', maxAge: 1000 * 60 * 60 * 24 },
 }));
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -31,14 +34,23 @@ app.use(session({
 app.get('/login', (req, res) => {
   const state = crypto.randomBytes(16).toString('hex');
   req.session.oauthState = state;
-  const params = new URLSearchParams({
-    response_type: 'code',
-    client_id: process.env.SPOTIFY_CLIENT_ID,
-    scope: SCOPES,
-    redirect_uri: REDIRECT_URI,
-    state,
+  // Save the session explicitly before redirecting — express-session's automatic
+  // save fires on res.end() but a redirect can race ahead of the write to the
+  // store, leaving the session empty when Spotify redirects back to /callback.
+  req.session.save(err => {
+    if (err) {
+      console.error('Session save error in /login:', err);
+      return res.redirect('/?error=session_error');
+    }
+    const params = new URLSearchParams({
+      response_type: 'code',
+      client_id: process.env.SPOTIFY_CLIENT_ID,
+      scope: SCOPES,
+      redirect_uri: REDIRECT_URI,
+      state,
+    });
+    res.redirect(`https://accounts.spotify.com/authorize?${params}`);
   });
-  res.redirect(`https://accounts.spotify.com/authorize?${params}`);
 });
 
 app.get('/callback', async (req, res) => {
@@ -99,6 +111,11 @@ app.get('/logout', (req, res) => {
 
 app.get('/api/auth-status', (req, res) => {
   res.json({ loggedIn: !!req.session.accessToken });
+});
+
+// Return the current access token so the Web Playback SDK can use it
+app.get('/api/token', ensureToken, (req, res) => {
+  res.json({ access_token: req.session.accessToken });
 });
 
 // ── Token refresh middleware ───────────────────────────────────────────────────
@@ -251,6 +268,32 @@ app.post('/api/remove-playlist-tracks', ensureToken, async (req, res) => {
     res.json({ removed: uris.length });
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed' });
+  }
+});
+
+// ── Playback control ──────────────────────────────────────────────────────────
+
+app.put('/api/player/play', ensureToken, async (req, res) => {
+  const { device_id, uri } = req.body;
+  if (!device_id || !uri) return res.status(400).json({ error: 'device_id and uri required' });
+  try {
+    await spotifyAPI(req).put(
+      `/me/player/play?device_id=${encodeURIComponent(device_id)}`,
+      { uris: [uri] }
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed' });
+  }
+});
+
+app.put('/api/player/pause', ensureToken, async (req, res) => {
+  try {
+    await spotifyAPI(req).put('/me/player/pause');
+    res.json({ ok: true });
+  } catch (err) {
+    // 403 = no active device; not an error worth surfacing
+    res.json({ ok: true });
   }
 });
 
