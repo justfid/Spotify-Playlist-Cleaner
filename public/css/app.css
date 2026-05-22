@@ -70,6 +70,7 @@ main {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 12px; padding: 1.5rem; cursor: pointer;
   transition: border-color 0.15s, background 0.15s; text-align: center;
+  user-select: none;
 }
 .source-card:hover, .source-card.active { border-color: var(--green); background: #0f1f14; }
 .source-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }

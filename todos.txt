@@ -1,4 +1,2 @@
 Performance — prefetching next 3 tracks, async buffer on advance, overlap fix (player.pause() before next track)
 README update — keep it current with all features
-Better Folder structure
-Finish tests once limits reset
