@@ -1,4 +1,4 @@
-# Spotify Cleaner
+# Spotify Playlist Cleaner
 
 Review your Liked Songs or any playlist one track at a time. Keep what you love, remove the rest — with full track playback and batch or instant deletion.
 
